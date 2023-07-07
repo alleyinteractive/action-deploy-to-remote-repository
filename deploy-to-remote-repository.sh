@@ -15,11 +15,14 @@ chmod 600 ~/.ssh/private_key
 # Clone remote repository
 git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
 
-# Rsync current repository to remote repository
-EXCLUDES=("${EXCLUDE_LIST}")
+# Rsync current repository to remote repository. Split the exclude list into an
+# array by splitting on commas.
+IFS=', ' read -r -A EXCLUDES <<< "$EXCLUDE_LIST"
+
+# Build the rsync exclude options
 EXCLUDE_OPTIONS="--exclude=.git "
 for EXCLUDE in "${EXCLUDES[@]}"; do
-	EXCLUDE_OPTIONS+="--exclude=$EXCLUDE "
+	EXCLUDE_OPTIONS+="--exclude=${EXCLUDE} "
 done
 
 rsync -av "$EXCLUDE_OPTIONS" "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
