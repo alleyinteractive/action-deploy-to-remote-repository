@@ -41,6 +41,6 @@ runs:
         REMOTE_BRANCH: ${{ inputs.remote_branch != '' && inputs.remote_branch || github.ref_name }}
         REMOTE_REPO_DIR: /tmp/remote_repo
         REMOTE_REPO: ${{ inputs.remote_repo }}
-        SSH_KEY: ${{ secrets.REMOTE_REPO_SSH_KEY }}
+        SSH_KEY: ${{ inputs.ssh-key }}
       run: ${{ github.action_path }}/deploy-to-remote-repository.sh
       shell: bash
