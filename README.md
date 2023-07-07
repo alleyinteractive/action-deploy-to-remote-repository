@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Sync to Remote Repository
-      uses: alleyinteractive/action-deploy-to-remote-repository@feature
+      uses: alleyinteractive/action-deploy-to-remote-repository@v1
       with:
         remote_repo: 'ssh://user@server/example.git'
         remote_branch: 'master' # Notable that this differs from 'production'
