@@ -13,7 +13,7 @@ echo -e "${SSH_KEY}" > ~/.ssh/private_key
 chmod 600 ~/.ssh/private_key
 
 # Clone remote repository
-git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}"
+git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
 
 # Rsync current repository to remote repository
 EXCLUDES=("${EXCLUDE_LIST}")
