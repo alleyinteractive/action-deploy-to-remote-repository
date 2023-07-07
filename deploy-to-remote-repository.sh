@@ -43,6 +43,12 @@ if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
 	mv "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.gitignore"
 fi
 
+# Support copying .pantheon/pantheon.yml to the root of the remote repository.
+if [[ "true" == "${PANTHEON_DEPLOYMENT}" && -f "${BASE_DIRECTORY}/.pantheon/pantheon.yml" && ! -f "${REMOTE_REPO_DIR}/pantheon.yml" ]]; then
+	echo "Copying ${BASE_DIRECTORY}/.pantheon/pantheon.yml to root of remote repository [${REMOTE_REPO_DIR}/pantheon.yml]"
+	cp "${BASE_DIRECTORY}/.pantheon/pantheon.yml" "${REMOTE_REPO_DIR}/pantheon.yml"
+fi
+
 # Commit and push changes to remote repository
 cd "${REMOTE_REPO_DIR}" || exit 1
 

@@ -23,6 +23,10 @@ inputs:
     description: 'Comma-separated list of files and directories to exclude from sync'
     required: false
     default: '.git, .gitmodules'
+  pantheon-deployment:
+    description: 'Determine if this is a deployment for a Pantheon repository. Supports migrating .pantheon/pantheon.yml to pantheon.yml in the root of the repository.'
+    required: false
+    default: 'false'
   ssh-key:
     description: 'SSH key for remote repository'
     required: true
@@ -38,6 +42,7 @@ runs:
         DESTINATION_DIRECTORY: ${{ inputs.destination_directory }}
         EXCLUDE_LIST: ${{ inputs.exclude_list }}
         GIT_SSH_COMMAND: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/private_key
+        PANTHEON_DEPLOYMENT: ${{ pantheon-deployment }}
         REMOTE_BRANCH: ${{ inputs.remote_branch != '' && inputs.remote_branch || github.ref_name }}
         REMOTE_REPO_DIR: /tmp/remote_repo
         REMOTE_REPO: ${{ inputs.remote_repo }}
