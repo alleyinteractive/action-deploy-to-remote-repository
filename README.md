@@ -29,43 +29,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-
-    - name: Cache Theme Webpack Folder
-      id: cache-webpack-themes
-      uses: actions/cache@v3
-      with:
-        path: themes/create-wordpress-theme/.cache
-        key: ${{ runner.os }}-webpack-theme
-
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        cache: 'npm'
-        cache-dependency-path: themes/create-wordpress-theme/package-lock.json
-        node-version: 16
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.1
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite,
-pdo_sqlite, gd
-        tools: composer:v2
-        coverage: none
-
-    - name: Install dependencies
-      uses: ramsey/composer-install@v2
-      with:
-        composer-options: "--no-progress --no-ansi --no-interaction --prefer-dist
---no-dev"
-
-    - name: Install npm dependencies
-      run: cd themes/create-wordpress-theme && npm ci
-
-    - name: Run npm build
-      run: cd themes/create-wordpress-theme && npm run build
 
     - name: Sync to Remote Repository
       uses: alleyinteractive/action-deploy-to-remote-repository@feature
