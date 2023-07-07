@@ -62,19 +62,19 @@ pdo_sqlite, gd
 --no-dev"
 
     - name: Install npm dependencies
-      run: cd themes/national-review && npm ci
+      run: cd themes/create-wordpress-theme && npm ci
 
     - name: Run npm build
       run: cd themes/create-wordpress-theme && npm run build
 
-    - name: Sync to Pantheon
+    - name: Sync to Remote Repository
       uses: alleyinteractive/action-deploy-to-remote-repository@feature
       with:
         remote_repo: 'ssh://user@server/example.git'
         remote_branch: 'master' # Notable that this differs from 'production'
         destination_directory: 'wp-content/'
         exclude_list: '.git, .github, .gitmodules, node_modules'
-        pantheon-deployment: 'true'
+        pantheon: 'true'
         ssh-key: ${{ secrets.REMOTE_REPO_SSH_KEY }}
 ```
 
@@ -125,7 +125,7 @@ pdo_sqlite, gd
 - Specify the SSH key to use for the remote repository (requires write access).
 - Required.
 
-### `pantheon-deployment`
+### `pantheon`
 
 - Determine if this is a deployment for a Pantheon repository. Supports
   migrating .pantheon/pantheon.yml to pantheon.yml in the root of the
