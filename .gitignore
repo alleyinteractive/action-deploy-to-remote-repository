@@ -13,7 +13,7 @@ node_modules
 
 # Ignore temporary OS files
 .DS_Store
-.DS_Store?
+.DS_Store?w
 .Spotlight-V100
 .Trashes
 ehthumbs.db

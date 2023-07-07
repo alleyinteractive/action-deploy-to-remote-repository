@@ -1,0 +1,46 @@
+name: 'Deploy to Remote Repository Action'
+description: 'Uses rsync and git to deploy files/folders from a local GitHub action repository to a remote repository.'
+author: 'alleyinteractive'
+branding:
+  icon: 'cloud-lightning'
+  color: 'blue'
+inputs:
+  remote_repo:
+    description: 'Remote repository URL'
+    required: true
+  remote_branch:
+    description: 'Remote branch to clone and push'
+    required: false
+  base_directory:
+    description: 'Base directory for rsync'
+    required: false
+    default: '.'
+  destination_directory:
+    description: 'Destination directory for rsync in remote repository'
+    required: false
+    default: '.'
+  exclude_list:
+    description: 'Comma-separated list of files and directories to exclude from sync'
+    required: false
+    default: '.git, .gitmodules'
+  ssh-key:
+    description: 'SSH key for remote repository'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Install rsync
+      run: sudo apt-get install -y rsync
+      shell: bash
+    - id: deploy-to-remote-repository
+      env:
+        BASE_DIRECTORY: ${{ inputs.base_directory }}
+        DESTINATION_DIRECTORY: ${{ inputs.destination_directory }}
+        EXCLUDE_LIST: ${{ inputs.exclude_list }}
+        GIT_SSH_COMMAND: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/private_key
+        REMOTE_BRANCH: ${{ inputs.remote_branch != '' && inputs.remote_branch || github.ref_name }}
+        REMOTE_REPO_DIR: /tmp/remote_repo
+        REMOTE_REPO: ${{ inputs.remote_repo }}
+        SSH_KEY: ${{ secrets.REMOTE_REPO_SSH_KEY }}
+      run: ${{ github.action_path }}/deploy-to-remote-repository.sh
+      shell: bash
