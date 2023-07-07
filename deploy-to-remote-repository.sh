@@ -44,7 +44,7 @@ if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
 fi
 
 # Support copying .pantheon/pantheon.yml to the root of the remote repository.
-if [[ "true" == "${PANTHEON_DEPLOYMENT}" && -f "${BASE_DIRECTORY}/.pantheon/pantheon.yml" && ! -f "${REMOTE_REPO_DIR}/pantheon.yml" ]]; then
+if [[ "true" == "${PANTHEON_DEPLOYMENT}" && -f "${BASE_DIRECTORY}/.pantheon/pantheon.yml" ]]; then
 	echo "Copying ${BASE_DIRECTORY}/.pantheon/pantheon.yml to root of remote repository [${REMOTE_REPO_DIR}/pantheon.yml]"
 	cp "${BASE_DIRECTORY}/.pantheon/pantheon.yml" "${REMOTE_REPO_DIR}/pantheon.yml"
 fi
