@@ -25,6 +25,11 @@ for EXCLUDE in "${EXCLUDES[@]}"; do
 	EXCLUDE_OPTIONS+="--exclude=${EXCLUDE} "
 done
 
+echo "EXCLUDE_OPTIONS: ${EXCLUDE_OPTIONS}"
+
+# DEBUGGING
+set -x
+
 rsync -av "$EXCLUDE_OPTIONS" "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
 
 # Replace .gitignore with .deployignore recursively.
