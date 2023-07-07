@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Deploy to Remote Repository Action
+# See README.md
+
 # Store the commit message in a temporary file.
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 echo "$COMMIT_MESSAGE" > /tmp/commit.message

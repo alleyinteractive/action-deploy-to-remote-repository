@@ -1,11 +1,15 @@
 # Deploy to Remote Repository Action
 
-Uses rsync and git to deploy files/folders from a local GitHub action repository to a remote repository.
+Uses rsync and git to deploy files/folders from a local GitHub action repository
+to a remote repository.
 
 _Notes_:
 
-- We do not leverage external actions to manage the SSH agent as we want to keep the code as simple/single-sourced as possible.
-- We must manually manage the SSH keys for the remote repository. This is typically done by adding the private key to the GitHub action secrets and then adding the public key to the remote repository (eg. as a write deploy key).
+- We do not leverage external actions to manage the SSH agent as we want to keep
+  the code as simple/single-sourced as possible.
+- We must manually manage the SSH keys for the remote repository. This is
+  typically done by adding the private key to the GitHub action secrets and then
+  adding the public key to the remote repository (eg. as a write deploy key).
 
 ## Usage
 
