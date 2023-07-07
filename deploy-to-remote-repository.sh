@@ -17,7 +17,7 @@ git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --de
 
 # Rsync current repository to remote repository. Split the exclude list into an
 # array by splitting on commas.
-IFS=', ' read -r -A EXCLUDES <<< "$EXCLUDE_LIST"
+IFS=', ' read -r -a EXCLUDES <<< "$EXCLUDE_LIST"
 
 # Build the rsync exclude options
 EXCLUDE_OPTIONS="--exclude=.git "
