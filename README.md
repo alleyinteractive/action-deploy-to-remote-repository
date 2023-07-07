@@ -13,50 +13,69 @@ _Notes_:
 
 ## Usage
 
-Example deploy to a WordPress VIP:
-
-> TODO: Update after action is built.
+Example deploy to a remote repository:
 
 ```yml
-name: Deploy to VIP repository
+name: Deploy to Pantheon Live
 
 on:
   push:
     branches:
       - production
-      - preprod
-      - develop
 
 jobs:
-  sync-to-vip:
-    uses: alleyinteractive/.github/.github/workflows/deploy-to-remote-repository.yml@main
-    with:
-      remote_repo: 'git@github.com:wpcomvip/alley.git'
-      exclude_list: '.git, .gitmodules, .revision, .deployment-state, .node_modules, no-vip'
-    secrets:
-      REMOTE_REPO_SSH_KEY: ${{ secrets.REMOTE_REPO_SSH_KEY }}
-```
+  build-and-sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
 
-Example Deploy to Pantheon multidev sites labeled `preprod` and `develop`:
+    - name: Cache Theme Webpack Folder
+      id: cache-webpack-themes
+      uses: actions/cache@v3
+      with:
+        path: themes/create-wordpress-theme/.cache
+        key: ${{ runner.os }}-webpack-theme
 
-```yml
-name: Deploy to Pantheon repository
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        cache: 'npm'
+        cache-dependency-path: themes/create-wordpress-theme/package-lock.json
+        node-version: 16
 
-on:
-  push:
-    branches:
-      - preprod
-      - develop
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite,
+pdo_sqlite, gd
+        tools: composer:v2
+        coverage: none
 
-jobs:
-  sync-to-pantheon:
-    uses: alleyinteractive/.github/.github/workflows/deploy-to-remote-repository.yml@main
-    with:
-      remote_repo: 'ssh://codeserver.dev.SOME-PANTHEON-SITE_ID@codeserver.dev.SOME-PANTHEON-SITE_ID.drush.in:2222/~/repository.git'
-      destination_directory: 'wp-content/'
-      exclude_list: '.git, pantheon-mu-plugin'
-    secrets:
-      REMOTE_REPO_SSH_KEY: ${{ secrets.REMOTE_REPO_SSH_KEY }}
+    - name: Install dependencies
+      uses: ramsey/composer-install@v2
+      with:
+        composer-options: "--no-progress --no-ansi --no-interaction --prefer-dist
+--no-dev"
+
+    - name: Install npm dependencies
+      run: cd themes/national-review && npm ci
+
+    - name: Run npm build
+      run: cd themes/create-wordpress-theme && npm run build
+
+    - name: Sync to Pantheon
+      uses: alleyinteractive/action-deploy-to-remote-repository@feature
+      with:
+        remote_repo: 'ssh://user@server/example.git'
+        remote_branch: 'master' # Notable that this differs from 'production'
+        destination_directory: 'wp-content/'
+        exclude_list: '.git, .github, .gitmodules, node_modules'
+        pantheon-deployment: 'true'
+        ssh-key: ${{ secrets.REMOTE_REPO_SSH_KEY }}
 ```
 
 ## Inputs
@@ -79,13 +98,15 @@ jobs:
 
 - Specify the remote branch to deploy to.
 - Accepts a string.
-- Defaults to the same branch name in the remote repo as the current running action.
+- Defaults to the same branch name in the remote repo as the current running
+  action.
 
 ### `base_directory`
 
 - Specify the base directory to sync from.
 - Accepts a string.
-- Defaults to the root of the repository (`.`). **NOTE** You likely want a trailing slash if you're syncing a subdirectory. (eg. `wp-content/`)
+- Defaults to the root of the repository (`.`). **NOTE** You likely want a
+  trailing slash if you're syncing a subdirectory. (eg. `wp-content/`)
 
 ### `destination_directory`
 
@@ -99,18 +120,23 @@ jobs:
 - Accepts a string. (e.g. `.git, .gitmodules`)
 - Defaults to `.git, .gitmodules`.
 
-## Secrets
-
-> Specify using `secrets` keyword.
-
-### `REMOTE_REPO_SSH_KEY`
+### `ssh-key`
 
 - Specify the SSH key to use for the remote repository (requires write access).
 - Required.
 
+### `pantheon-deployment`
+
+- Determine if this is a deployment for a Pantheon repository. Supports
+  migrating .pantheon/pantheon.yml to pantheon.yml in the root of the
+  repository.
+- Accepts a string. (e.g. `true` or `false`)
+- Defaults to `false`.
+
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed
+recently.
 
 ## Credits
 
@@ -122,4 +148,5 @@ Interactive](https://github.com/alleyinteractive).
 
 ## License
 
-The GNU General Public License (GPL) license. Please see [License File](LICENSE) for more information.
+The GNU General Public License (GPL) license. Please see [License File](LICENSE)
+for more information.
