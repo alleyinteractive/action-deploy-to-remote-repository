@@ -1,11 +1,26 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Deploy to Remote Repository Action
 # See README.md
 
+# Trivial temp directory management
+SCRATCH=$(mktemp -d) || exit 1
+
+# Cleanup the temp directory on exit
+function cleanup {
+	# remove the temp directory
+	rm -rf "$SCRATCH"
+	# Remove any ssh keys we've set
+	rm -f ~/.ssh/private_key
+}
+trap cleanup EXIT
+
+# Update the REMOTE_REPO_DIR to be a subdirectory of the scratch directory
+REMOTE_REPO_DIR="${SCRATCH}/remote-repo"
+
 # Store the commit message in a temporary file.
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-echo "$COMMIT_MESSAGE" > /tmp/commit.message
+echo "$COMMIT_MESSAGE" > "${SCRATCH}/commit.message"
 
 # Setup the SSH key.
 mkdir -p ~/.ssh
@@ -36,11 +51,10 @@ if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
 	echo "Replacing .gitignore with .deployignore"
 
 	find "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" -type f -name '.gitignore' | while read -r GITIGNORE_FILE; do
-		echo "# Emptied by vip-go-build; '.deployignore' exists and used as global .gitignore." > "$GITIGNORE_FILE"
-		echo "${GITIGNORE_FILE}"
+		echo "# Emptied by deploy-to-remote-repository.sh; '.deployignore' exists and used as global .gitignore." > "$GITIGNORE_FILE"
 	done
 
-	mv "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.gitignore"
+	mv -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.gitignore"
 fi
 
 # Support copying .pantheon/pantheon.yml to the root of the remote repository.
@@ -59,13 +73,8 @@ git config user.email "action@github.com"
 
 git add -A
 git status
-git commit --allow-empty -a --file=/tmp/commit.message
+git commit --allow-empty -a --file="${SCRATCH}/commit.message"
 
 # Push the new branch to the remote repository
 echo "Pushing to ${REMOTE_REPO}@${REMOTE_BRANCH}"
 git push -u origin
-
-# Cleanup after ourselves.
-rm -rf "${REMOTE_REPO_DIR}"
-rm -f /tmp/commit.message
-rm -f ~/.ssh/private_key
