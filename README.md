@@ -41,6 +41,22 @@ jobs:
         ssh-key: ${{ secrets.REMOTE_REPO_SSH_KEY }}
 ```
 
+### `.deployignore`
+
+The action supports recursively replacing all `.gitignore` files in your project
+with a root-level `.deployignore` file if one is found. This is useful for
+excluding files from the deployment that would have previously been ignored by
+version control (such as built assets and Composer dependencies). The
+`.deployignore` syntax is the same as a normal `.gitignore` file.
+
+### Pantheon Mode
+
+Passing `pantheon: 'true'` to the action will enable "Pantheon" mode. This will
+allow the action to copy the `.pantheon/pantheon.yml` file (if it exists) to the
+root of the repository as `pantheon.yml`. This is useful for projects that are
+rooted at `wp-content` but still want to version control their Pantheon
+configuration.
+
 ## Inputs
 
 > Specify using `with` keyword.
@@ -91,7 +107,7 @@ jobs:
 ### `pantheon`
 
 - Determine if this is a deployment for a Pantheon repository. Supports
-  migrating .pantheon/pantheon.yml to pantheon.yml in the root of the
+  migrating `.pantheon/pantheon.yml` to `pantheon.yml` in the root of the
   repository.
 - Accepts a string. (e.g. `true` or `false`)
 - Defaults to `false`.
