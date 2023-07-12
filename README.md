@@ -107,8 +107,8 @@ configuration.
 ### `pantheon`
 
 - Determine if this is a deployment for a Pantheon repository. Supports
-  migrating `.pantheon/pantheon.yml` to `pantheon.yml` in the root of the
-  repository.
+  migrating `.pantheon/pantheon.yml` to `pantheon.yml` and
+  `.pantheon/private` to `private` in the root of the repository.
 - Accepts a string. (e.g. `true` or `false`)
 - Defaults to `false`.
 
