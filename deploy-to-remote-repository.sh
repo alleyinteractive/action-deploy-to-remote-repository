@@ -42,6 +42,9 @@ EXCLUDE_OPTIONS="--exclude=.git "
 for EXCLUDE in "${EXCLUDES[@]}"; do
 	EXCLUDE_OPTIONS+="--exclude=${EXCLUDE} "
 done
+if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
+	EXCLUDE_OPTIONS+="--exclude=.pantheon "
+fi
 
 # shellcheck disable=SC2086
 rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
