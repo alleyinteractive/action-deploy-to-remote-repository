@@ -24,7 +24,7 @@ inputs:
     required: false
     default: '.git, .gitmodules'
   pantheon:
-    description: 'Determine if this is a deployment for a Pantheon repository. Supports migrating .pantheon/pantheon.yml to pantheon.yml in the root of the repository.'
+    description: 'Determine if this is a deployment for a Pantheon repository. Supports migrating .pantheon/pantheon.yml to pantheon.yml and .pantheon/private to private in the root of the repository.'
     required: false
     default: 'false'
   ssh-key:

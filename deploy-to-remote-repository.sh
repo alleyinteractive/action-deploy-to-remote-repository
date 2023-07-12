@@ -42,6 +42,9 @@ EXCLUDE_OPTIONS="--exclude=.git "
 for EXCLUDE in "${EXCLUDES[@]}"; do
 	EXCLUDE_OPTIONS+="--exclude=${EXCLUDE} "
 done
+if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
+	EXCLUDE_OPTIONS+="--exclude=.pantheon "
+fi
 
 # shellcheck disable=SC2086
 rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
@@ -57,10 +60,19 @@ if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
 	mv -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.gitignore"
 fi
 
-# Support copying .pantheon/pantheon.yml to the root of the remote repository.
-if [[ "true" == "${PANTHEON_DEPLOYMENT}" && -f "${BASE_DIRECTORY}/.pantheon/pantheon.yml" ]]; then
-	echo "Copying ${BASE_DIRECTORY}/.pantheon/pantheon.yml to root of remote repository [${REMOTE_REPO_DIR}/pantheon.yml]"
-	cp "${BASE_DIRECTORY}/.pantheon/pantheon.yml" "${REMOTE_REPO_DIR}/pantheon.yml"
+# Pantheon-specific steps.
+if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
+	# Support copying .pantheon/pantheon.yml to the root of the remote repository.
+	if [[ -f "${BASE_DIRECTORY}/.pantheon/pantheon.yml" ]]; then
+		echo "Copying ${BASE_DIRECTORY}/.pantheon/pantheon.yml to root of remote repository [${REMOTE_REPO_DIR}/pantheon.yml]"
+		cp "${BASE_DIRECTORY}/.pantheon/pantheon.yml" "${REMOTE_REPO_DIR}/pantheon.yml"
+	fi
+
+	# Support copying .pantheon/private to the root of the remote repository.
+	if [[ -d "${BASE_DIRECTORY}/.pantheon/private" ]]; then
+		echo "Copying ${BASE_DIRECTORY}/.pantheon/private to root of remote repository [${REMOTE_REPO_DIR}/private]"
+		rsync -av "${BASE_DIRECTORY}/.pantheon/private/" "${REMOTE_REPO_DIR}/private/" --delete
+	fi
 fi
 
 # Commit and push changes to remote repository
