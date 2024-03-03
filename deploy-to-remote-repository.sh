@@ -22,9 +22,6 @@ REMOTE_REPO_DIR="${SCRATCH}/remote-repo"
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 echo "$COMMIT_MESSAGE" > "${SCRATCH}/commit.message"
 
-
-echo "Setup SSH key."
-
 # Setup the SSH key.
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
@@ -32,9 +29,6 @@ chmod 700 ~/.ssh
 # Write the private key to a file, interpret any escaped newlines
 echo -e "${SSH_KEY}" > ~/.ssh/private_key
 chmod 600 ~/.ssh/private_key
-
-
-echo "Clone remote repository"
 
 # Clone remote repository
 git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
@@ -51,8 +45,6 @@ done
 if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
 	EXCLUDE_OPTIONS+="--exclude=.pantheon "
 fi
-
-echo "rsync"
 
 # shellcheck disable=SC2086
 rsync -av $EXCLUDE_OPTIONS ${BASE_DIRECTORY} "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
