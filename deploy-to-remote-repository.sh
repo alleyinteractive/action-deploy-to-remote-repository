@@ -22,6 +22,8 @@ REMOTE_REPO_DIR="${SCRATCH}/remote-repo"
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 echo "$COMMIT_MESSAGE" > "${SCRATCH}/commit.message"
 
+echo "Setup SSH key."
+
 # Setup the SSH key.
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
@@ -46,8 +48,10 @@ if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
 	EXCLUDE_OPTIONS+="--exclude=.pantheon "
 fi
 
+echo "rsync"
+
 # shellcheck disable=SC2086
-rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
+rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete --ignore-missing-args
 
 # Replace .gitignore with .deployignore recursively.
 if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
