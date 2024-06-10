@@ -63,9 +63,9 @@ provides the following features:
 
 ### AWS CodeCommit Support
 
-To deploy to an AWS CodeCommit repository, provide the remote_repo URL starting with codecommit: and include the necessary AWS credentials and region as input parameters.
+To deploy to an AWS CodeCommit repository, you can either provide the [remote_repo](#remote_repo) URL beginning  with the `codecommit://` protocol and include the necessary AWS credentials and region as input parameters, or you can utilize the standard `ssh://` protocol via the [remote_repo](#remote_repo) name like `ssh://YOUR-AWS-SSH-KEY-ID@git-codecommit.REGION.amazonaws.com/v1/repos/REPOSITORY-NAME` and supply the ssh-key (see [AWS troubleshooting SSH for more information](https://docs.aws.amazon.com/codecommit/latest/userguide/troubleshooting-ssh.html#troubleshooting-ae4)).
 
-Example deploy to an AWS CodeCommit repository:
+Example deploy to an AWS CodeCommit repository using the `codecommit://` protocol:
 
 ```yml
 name: Deploy to CodeCommit
@@ -149,18 +149,18 @@ jobs:
 
 ### `aws-access-key-id`
 
-Specify the AWS Access Key ID for CodeCommit.
-Required when deploying to a CodeCommit repository.
+- Specify the AWS Access Key ID for CodeCommit.
+- Required when deploying to a CodeCommit repository using the `codecommit://` protocol.
 
 ### `aws-secret-access-key`
 
-Specify the AWS Secret Access Key for CodeCommit.
-Required when deploying to a CodeCommit repository.
+- Specify the AWS Secret Access Key for CodeCommit.
+- Required when deploying to a CodeCommit repository using the `codecommit://` protocol.
 
 ### `aws-default-region`
 
-Specify the AWS Default Region for CodeCommit.
-Required when deploying to a CodeCommit repository.
+- Specify the AWS Default Region for CodeCommit.
+- Required when deploying to a CodeCommit repository using the `codecommit://` protocol.
 
 ## Changelog
 
