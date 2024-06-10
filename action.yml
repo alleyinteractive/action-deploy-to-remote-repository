@@ -30,12 +30,30 @@ inputs:
   ssh-key:
     description: 'SSH key for remote repository'
     required: true
+  aws-access-key-id:
+    description: 'AWS Access Key ID for CodeCommit'
+    required: false
+  aws-secret-access-key:
+    description: 'AWS Secret Access Key for CodeCommit'
+    required: false
+  aws-default-region:
+    description: 'AWS Default Region for CodeCommit'
+    required: false
 runs:
   using: 'composite'
   steps:
     - name: Install rsync
       run: sudo apt-get install -y rsync
       shell: bash
+
+    - name: Install AWS CLI and git-remote-codecommit
+      if: startsWith(inputs.remote_repo, 'codecommit')
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git python3 python3-pip
+        sudo pip3 install awscli git-remote-codecommit
+      shell: bash
+
     - id: deploy-to-remote-repository
       env:
         BASE_DIRECTORY: ${{ inputs.base_directory }}
@@ -47,5 +65,8 @@ runs:
         REMOTE_REPO_DIR: /tmp/remote_repo
         REMOTE_REPO: ${{ inputs.remote_repo }}
         SSH_KEY: ${{ inputs.ssh-key }}
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws-default-region }}
       run: ${{ github.action_path }}/deploy-to-remote-repository.sh
       shell: bash

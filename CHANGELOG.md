@@ -2,6 +2,10 @@
 
 All notable changes to `Deploy to Remote Repository Action` will be documented in this file.
 
+## 2.1.0 - 2024-06-10
+
+- Added support for deploying to AWS CodeCommit repositories.
+
 ## 2.0.0 - 2024-05-10
 
 - Potential **breaking change**: extends [Pantheon Mode](/README.md#pantheon-mode) to automatically add `mu-plugins/pantheon-mu-plugin` to the [exclude list](/README.md#exclude_list) to prevent common deployment errors related to this directory.
