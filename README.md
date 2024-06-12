@@ -51,11 +51,15 @@ version control (such as built assets and Composer dependencies). The
 
 ### Pantheon Mode
 
-Passing `pantheon: 'true'` to the action will enable "Pantheon" mode. This will
-allow the action to copy the `.pantheon/pantheon.yml` file (if it exists) to the
-root of the repository as `pantheon.yml`. This is useful for projects that are
-rooted at `wp-content` but still want to version control their Pantheon
-configuration.
+Passing `pantheon: 'true'` to the action will enable "Pantheon" mode. This mode
+provides the following features:
+
+- Copies the `.pantheon/pantheon.yml` file (if it exists) to the root of the
+  repository as `pantheon.yml`. This is useful for projects that are rooted at
+  `wp-content` but still want to version control their Pantheon configuration.
+- Copies the `.pantheon/private` directory (if it exists) to the root of the
+  repository as `private`.
+- Automatically adds `.pantheon` and `mu-plugins/pantheon-mu-plugin` to the [exclude list](#exclude_list) to prevent common deployment errors related to these directories.
 
 ## Inputs
 
@@ -106,9 +110,7 @@ configuration.
 
 ### `pantheon`
 
-- Determine if this is a deployment for a Pantheon repository. Supports
-  migrating `.pantheon/pantheon.yml` to `pantheon.yml` and
-  `.pantheon/private` to `private` in the root of the repository.
+- Determine if this is a deployment for a Pantheon repository. See [Pantheon Mode](#pantheon-mode) for more details.
 - Accepts a string. (e.g. `true` or `false`)
 - Defaults to `false`.
 

@@ -43,7 +43,7 @@ for EXCLUDE in "${EXCLUDES[@]}"; do
 	EXCLUDE_OPTIONS+="--exclude=${EXCLUDE} "
 done
 if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
-	EXCLUDE_OPTIONS+="--exclude=.pantheon "
+	EXCLUDE_OPTIONS+="--exclude=.pantheon --exclude=mu-plugins/pantheon-mu-plugin "
 fi
 
 # shellcheck disable=SC2086
