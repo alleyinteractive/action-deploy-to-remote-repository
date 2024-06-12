@@ -47,7 +47,7 @@ if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
 fi
 
 # shellcheck disable=SC2086
-rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
+rsync -av $EXCLUDE_OPTIONS ${BASE_DIRECTORY} "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
 
 # Replace .gitignore with .deployignore recursively.
 if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
