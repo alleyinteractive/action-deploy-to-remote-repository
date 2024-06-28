@@ -9,7 +9,7 @@ _Notes_:
   the code as simple/single-sourced as possible.
 - We must manually manage the SSH keys for the remote repository. This is
   typically done by adding the private key to the GitHub action secrets and then
-  adding the public key to the remote repository (eg. as a write deploy key).
+  adding the public key to the remote repository (e.g., as a write deploy key).
 
 ## Usage
 
@@ -105,7 +105,9 @@ provides the following features:
 
 ### `ssh-key`
 
-- Specify the SSH key to use for the remote repository (requires write access).
+- Specify the SSH private key to use for the remote repository.
+- A corresponding public key must be added as a deploy key to the remote repository with write access.
+- Should reference a GitHub secret. See above for an example. The actual private key should be stored in secrets, and never committed to the repository.
 - Required.
 
 ### `pantheon`
