@@ -22,7 +22,7 @@ inputs:
   exclude_list:
     description: 'Comma-separated list of files and directories to exclude from sync'
     required: false
-    default: '.git, .gitmodules'
+    default: '.git, .gitmodules, .github'
   pantheon:
     description: 'Determine if this is a deployment for a Pantheon repository. Supports migrating .pantheon/pantheon.yml to pantheon.yml and .pantheon/private to private in the root of the repository.'
     required: false
