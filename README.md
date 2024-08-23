@@ -100,8 +100,8 @@ provides the following features:
 ### `exclude_list`
 
 - Specify a comma-separated list of files and directories to exclude from sync.
-- Accepts a string. (e.g. `.git, .gitmodules`)
-- Defaults to `.git, .gitmodules`.
+- Accepts a string. (e.g. `.git, .gitmodules, .github`)
+- Defaults to `.git, .gitmodules, .github`.
 
 ### `ssh-key`
 
