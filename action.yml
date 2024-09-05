@@ -27,6 +27,10 @@ inputs:
     description: 'Determine if this is a deployment for a Pantheon repository. Supports migrating .pantheon/pantheon.yml to pantheon.yml and .pantheon/private to private in the root of the repository.'
     required: false
     default: 'false'
+  skip-deployignore-replacement:
+    description: 'Skip replacing .gitignore with .deployignore'
+    required: false
+    default: 'false'
   ssh-key:
     description: 'SSH key for remote repository'
     required: true
@@ -47,5 +51,6 @@ runs:
         REMOTE_REPO_DIR: /tmp/remote_repo
         REMOTE_REPO: ${{ inputs.remote_repo }}
         SSH_KEY: ${{ inputs.ssh-key }}
+        SKIP_DEPLOYIGNORE_REPLACEMENT: ${{ inputs.skip-deployignore-replacement }}
       run: ${{ github.action_path }}/deploy-to-remote-repository.sh
       shell: bash

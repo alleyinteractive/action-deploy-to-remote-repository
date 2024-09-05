@@ -47,7 +47,9 @@ The action supports recursively replacing all `.gitignore` files in your project
 with a root-level `.deployignore` file if one is found. This is useful for
 excluding files from the deployment that would have previously been ignored by
 version control (such as built assets and Composer dependencies). The
-`.deployignore` syntax is the same as a normal `.gitignore` file.
+`.deployignore` syntax is the same as a normal `.gitignore` file. If you want to
+maintain separate `.gitignore` and `.deployignore` files, you can set the
+[`skip-deployignore-replacement`](#skip-deployignore-replacement) input to `true`.
 
 ### Pantheon Mode
 
@@ -102,6 +104,16 @@ provides the following features:
 - Specify a comma-separated list of files and directories to exclude from sync.
 - Accepts a string. (e.g. `.git, .gitmodules, .github`)
 - Defaults to `.git, .gitmodules, .github`.
+
+
+### `skip-deployignore-replacement`
+
+- Skip replacing .gitignore with .deployignore
+- Accepts a string. (e.g. 'true', or 'false')
+- Defaults to 'false'.
+
+> When set to 'true', the action will not replace .gitignore files with .deployignore, even if a .deployignore file exists.
+This is useful when you want to maintain separate .gitignore and .deployignore files in your deployment.
 
 ### `ssh-key`
 
