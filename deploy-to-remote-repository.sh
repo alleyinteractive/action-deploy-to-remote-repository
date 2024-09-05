@@ -51,15 +51,15 @@ rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION
 
 # Replace .gitignore with .deployignore recursively.
 if [ "${SKIP_DEPLOYIGNORE_REPLACEMENT}" != "true" ] && [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
-    echo "Replacing .gitignore with .deployignore"
+	echo "Replacing .gitignore with .deployignore"
 
-    find "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" -type f -name '.gitignore' | while read -r GITIGNORE_FILE; do
-        echo "# Emptied by deploy-to-remote-repository.sh; '.deployignore' exists and used as global .gitignore." > "$GITIGNORE_FILE"
-    done
+	find "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" -type f -name '.gitignore' | while read -r GITIGNORE_FILE; do
+		echo "# Emptied by deploy-to-remote-repository.sh; '.deployignore' exists and used as global .gitignore." > "$GITIGNORE_FILE"
+	done
 
-    mv -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.gitignore"
+	mv -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.gitignore"
 else
-    echo "Skipping .gitignore replacement"
+	echo "Skipping .gitignore replacement"
 fi
 
 # Pantheon-specific steps.
