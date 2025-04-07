@@ -30,8 +30,14 @@ chmod 700 ~/.ssh
 echo -e "${SSH_KEY}" > ~/.ssh/private_key
 chmod 600 ~/.ssh/private_key
 
-# Clone remote repository
-git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
+# Clone remote repository; create deploy branch if it does not exist
+if [[ 0 = $(git ls-remote --heads "${REMOTE_REPO}" "${REMOTE_BRANCH}" | wc -l) ]]; then
+	git clone "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
+	cd "${REMOTE_REPO_DIR}" || exit 1
+	git checkout --quiet "${REMOTE_BRANCH_ORPHAN_FLAG}" "${DEPLOY_BRANCH}"
+else
+	git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
+fi
 
 # Rsync current repository to remote repository. Split the exclude list into an
 # array by splitting on commas.

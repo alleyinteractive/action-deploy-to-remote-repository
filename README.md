@@ -84,6 +84,12 @@ provides the following features:
 - Defaults to the same branch name in the remote repo as the current running
   action.
 
+### `remote_branch_is_orphan`
+
+- Whether to use the `--orphan` flag when creating the remote branch.
+- Accepts a string. (e.g. `true` or `false`)
+- Defaults to `false`.
+
 ### `base_directory`
 
 - Specify the base directory to sync from.
