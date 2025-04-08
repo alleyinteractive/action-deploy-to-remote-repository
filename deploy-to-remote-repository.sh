@@ -35,6 +35,7 @@ if [[ 0 = $(git ls-remote --heads "${REMOTE_REPO}" "${REMOTE_BRANCH}" | wc -l) ]
 	git clone "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
 	cd "${REMOTE_REPO_DIR}" || exit 1
 	git checkout --quiet "${REMOTE_BRANCH_ORPHAN_FLAG}" "${REMOTE_BRANCH}"
+	git push --set-upstream origin "${REMOTE_BRANCH}"
 else
 	git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
 fi
