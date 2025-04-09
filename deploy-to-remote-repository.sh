@@ -33,10 +33,10 @@ chmod 600 ~/.ssh/private_key
 # Clone remote repository; create deploy branch if it does not exist
 if [[ 0 = $(git ls-remote --heads "${REMOTE_REPO}" "${REMOTE_BRANCH}" | wc -l) ]]; then
 	git clone "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
-	BASE_DIRECTORY=$(pwd)
+	CURRENT_DIRECTORY=$(pwd)
 	cd "${REMOTE_REPO_DIR}" || exit 1
 	git checkout --quiet "${REMOTE_BRANCH_ORPHAN_FLAG}" "${REMOTE_BRANCH}"
-	cd "${BASE_DIRECTORY}" || exit 1
+	cd "${CURRENT_DIRECTORY}" || exit 1
 else
 	git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
 fi
