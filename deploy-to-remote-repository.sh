@@ -58,7 +58,7 @@ fi
 rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
 
 # Replace .gitignore with .deployignore recursively.
-if [[ "false" != "${DEPLOYIGNORE}" && -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]]; then
+if [[ "true" == "${DEPLOYIGNORE}" && -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]]; then
 	echo "Replacing .gitignore with .deployignore"
 
 	find "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" -type f -name '.gitignore' | while read -r GITIGNORE_FILE; do
@@ -86,7 +86,7 @@ fi
 cd "${REMOTE_REPO_DIR}" || exit 1
 
 # If we are processing a deployignore file, also remove any newly ignored files from being tracked by git
-if [[ "false" != "${DEPLOYIGNORE}" ]]; then
+if [[ "true" == "${DEPLOYIGNORE}" ]]; then
 	git ls-files -ciz --exclude-standard | xargs -0 git rm --cached
 fi
 

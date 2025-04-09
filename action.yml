@@ -14,10 +14,15 @@ inputs:
   remote_branch_is_orphan:
     description: 'Whether to use the --orphan flag when creating the remote branch'
     required: false
+    default: 'false'
   base_directory:
     description: 'Base directory for rsync'
     required: false
     default: '.'
+  deployignore:
+    description: 'Whether to replace .gitignore with .deployignore'
+    required: false
+    default: 'true'
   destination_directory:
     description: 'Destination directory for rsync in remote repository'
     required: false
