@@ -85,9 +85,9 @@ fi
 
 cd "${REMOTE_REPO_DIR}" || exit 1
 
-# If we are processing a deployignore file, remove any files that are tracked by git but should be ignored
+# If we are processing a deployignore file, also remove any newly ignored files from being tracked by git
 if [[ "false" != "${DEPLOYIGNORE}" ]]; then
-	git ls-files -i --exclude-standard -z | xargs -0 rm -rf
+	git ls-files -ciz --exclude-standard | xargs -0 git rm --cached
 fi
 
 # Set git user.name to include repository name
