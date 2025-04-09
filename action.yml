@@ -42,6 +42,7 @@ runs:
     - id: deploy-to-remote-repository
       env:
         BASE_DIRECTORY: ${{ inputs.base_directory }}
+        DEPLOYIGNORE: ${{ inputs.deployignore }}
         DESTINATION_DIRECTORY: ${{ inputs.destination_directory }}
         EXCLUDE_LIST: ${{ inputs.exclude_list }}
         GIT_SSH_COMMAND: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/private_key
