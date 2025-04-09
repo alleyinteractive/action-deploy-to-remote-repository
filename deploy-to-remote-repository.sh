@@ -83,14 +83,19 @@ if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
 	fi
 fi
 
-# Commit and push changes to remote repository
 cd "${REMOTE_REPO_DIR}" || exit 1
+
+# If we are processing a deployignore file, remove any files that are tracked by git but should be ignored
+if [[ "false" != "${DEPLOYIGNORE}" ]]; then
+	git ls-files -i --exclude-standard -z | xargs -0 rm -rf
+fi
 
 # Set git user.name to include repository name
 REPO_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F '/' '{print $2}')
 git config user.name "${REPO_NAME} GitHub Action"
 git config user.email "action@github.com"
 
+# Commit changes
 git add -A
 git status
 git commit --allow-empty -a --file="${SCRATCH}/commit.message"
