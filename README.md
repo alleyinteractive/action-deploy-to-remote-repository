@@ -47,7 +47,8 @@ The action supports recursively replacing all `.gitignore` files in your project
 with a root-level `.deployignore` file if one is found. This is useful for
 excluding files from the deployment that would have previously been ignored by
 version control (such as built assets and Composer dependencies). The
-`.deployignore` syntax is the same as a normal `.gitignore` file.
+`.deployignore` syntax is the same as a normal `.gitignore` file. To skip invoking
+this behavior, use the `deployignore: 'false'` input.
 
 ### Pantheon Mode
 
@@ -84,6 +85,12 @@ provides the following features:
 - Defaults to the same branch name in the remote repo as the current running
   action.
 
+### `remote_branch_is_orphan`
+
+- Whether to use the `--orphan` flag when creating the remote branch.
+- Accepts a string. (e.g. `true` or `false`)
+- Defaults to `false`.
+
 ### `base_directory`
 
 - Specify the base directory to sync from.
@@ -102,6 +109,12 @@ provides the following features:
 - Specify a comma-separated list of files and directories to exclude from sync.
 - Accepts a string. (e.g. `.git, .gitmodules, .github`)
 - Defaults to `.git, .gitmodules, .github`.
+
+### `deployignore`
+
+- Whether to replace `.gitignore` with `.deployignore` if the files exist.
+- Accepts a string. (e.g. `true` or `false`)
+- Defaults to `true`.
 
 ### `ssh-key`
 

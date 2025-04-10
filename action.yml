@@ -11,10 +11,18 @@ inputs:
   remote_branch:
     description: 'Remote branch to clone and push'
     required: false
+  remote_branch_is_orphan:
+    description: 'Whether to use the --orphan flag when creating the remote branch'
+    required: false
+    default: 'false'
   base_directory:
     description: 'Base directory for rsync'
     required: false
     default: '.'
+  deployignore:
+    description: 'Whether to replace .gitignore with .deployignore'
+    required: false
+    default: 'true'
   destination_directory:
     description: 'Destination directory for rsync in remote repository'
     required: false
@@ -39,11 +47,13 @@ runs:
     - id: deploy-to-remote-repository
       env:
         BASE_DIRECTORY: ${{ inputs.base_directory }}
+        DEPLOYIGNORE: ${{ inputs.deployignore }}
         DESTINATION_DIRECTORY: ${{ inputs.destination_directory }}
         EXCLUDE_LIST: ${{ inputs.exclude_list }}
         GIT_SSH_COMMAND: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/private_key
         PANTHEON_DEPLOYMENT: ${{ inputs.pantheon }}
         REMOTE_BRANCH: ${{ inputs.remote_branch != '' && inputs.remote_branch || github.ref_name }}
+        REMOTE_BRANCH_ORPHAN_FLAG: ${{ inputs.remote_branch_is_orphan == 'true' && '--orphan' || '' }}
         REMOTE_REPO_DIR: /tmp/remote_repo
         REMOTE_REPO: ${{ inputs.remote_repo }}
         SSH_KEY: ${{ inputs.ssh-key }}

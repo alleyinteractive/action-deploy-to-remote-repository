@@ -30,8 +30,16 @@ chmod 700 ~/.ssh
 echo -e "${SSH_KEY}" > ~/.ssh/private_key
 chmod 600 ~/.ssh/private_key
 
-# Clone remote repository
-git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
+# Clone remote repository; create deploy branch if it does not exist
+if [[ 0 = $(git ls-remote --heads "${REMOTE_REPO}" "${REMOTE_BRANCH}" | wc -l) ]]; then
+	git clone "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
+	CURRENT_DIRECTORY=$(pwd)
+	cd "${REMOTE_REPO_DIR}" || exit 1
+	git checkout --quiet "${REMOTE_BRANCH_ORPHAN_FLAG}" "${REMOTE_BRANCH}"
+	cd "${CURRENT_DIRECTORY}" || exit 1
+else
+	git clone --branch "${REMOTE_BRANCH}" "${REMOTE_REPO}" "${REMOTE_REPO_DIR}" --depth 1
+fi
 
 # Rsync current repository to remote repository. Split the exclude list into an
 # array by splitting on commas.
@@ -50,7 +58,7 @@ fi
 rsync -av $EXCLUDE_OPTIONS "${BASE_DIRECTORY}" "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" --delete
 
 # Replace .gitignore with .deployignore recursively.
-if [ -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]; then
+if [[ "true" == "${DEPLOYIGNORE}" && -f "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}/.deployignore" ]]; then
 	echo "Replacing .gitignore with .deployignore"
 
 	find "${REMOTE_REPO_DIR}/${DESTINATION_DIRECTORY}" -type f -name '.gitignore' | while read -r GITIGNORE_FILE; do
@@ -75,18 +83,26 @@ if [[ "true" == "${PANTHEON_DEPLOYMENT}" ]]; then
 	fi
 fi
 
-# Commit and push changes to remote repository
 cd "${REMOTE_REPO_DIR}" || exit 1
+
+# If we are processing a deployignore file, also remove any newly ignored files from being tracked by git
+if [[ "true" == "${DEPLOYIGNORE}" ]]; then
+	IGNORED_FILES=$(git ls-files -ci --exclude-standard)
+	if [[ -n "$IGNORED_FILES" ]]; then
+		git ls-files -ciz --exclude-standard | xargs -0 git rm -f --cached
+	fi
+fi
 
 # Set git user.name to include repository name
 REPO_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F '/' '{print $2}')
 git config user.name "${REPO_NAME} GitHub Action"
 git config user.email "action@github.com"
 
+# Commit changes
 git add -A
 git status
 git commit --allow-empty -a --file="${SCRATCH}/commit.message"
 
 # Push the new branch to the remote repository
 echo "Pushing to ${REMOTE_REPO}@${REMOTE_BRANCH}"
-git push -u origin
+git push -u origin "${REMOTE_BRANCH}"
