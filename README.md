@@ -28,10 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Sync to Remote Repository
-      uses: alleyinteractive/action-deploy-to-remote-repository@v1
+      uses: alleyinteractive/action-deploy-to-remote-repository@v2
       with:
         remote_repo: 'ssh://user@server/example.git'
         remote_branch: 'master' # Notable that this differs from 'production'
@@ -61,6 +61,38 @@ provides the following features:
 - Copies the `.pantheon/private` directory (if it exists) to the root of the
   repository as `private`.
 - Automatically adds `.pantheon` and `mu-plugins/pantheon-mu-plugin` to the [exclude list](#exclude_list) to prevent common deployment errors related to these directories.
+
+### AWS CodeCommit Support
+
+To deploy to an AWS CodeCommit repository, you can either provide the [remote_repo](#remote_repo) URL beginning  with the `codecommit://` protocol and include the necessary AWS credentials and region as input parameters, or you can utilize the standard `ssh://` protocol via the [remote_repo](#remote_repo) name like `ssh://YOUR-AWS-SSH-KEY-ID@git-codecommit.REGION.amazonaws.com/v1/repos/REPOSITORY-NAME` and supply the ssh-key (see [AWS troubleshooting SSH for more information](https://docs.aws.amazon.com/codecommit/latest/userguide/troubleshooting-ssh.html#troubleshooting-ae4)).
+
+Example deploy to an AWS CodeCommit repository using the `codecommit://` protocol:
+
+```yml
+name: Deploy to CodeCommit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Sync to CodeCommit Repository
+      uses: alleyinteractive/action-deploy-to-remote-repository@v2
+      with:
+        remote_repo: 'codecommit://MyCodeCommitRepo'
+        remote_branch: 'main'
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-default-region: 'us-west-2'
+        ssh-key: "# none if using AWS access keys; but the field is required for typical use"
+```
 
 ## Inputs
 
@@ -128,6 +160,22 @@ provides the following features:
 - Determine if this is a deployment for a Pantheon repository. See [Pantheon Mode](#pantheon-mode) for more details.
 - Accepts a string. (e.g. `true` or `false`)
 - Defaults to `false`.
+
+
+### `aws-access-key-id`
+
+- Specify the AWS Access Key ID for CodeCommit.
+- Required when deploying to a CodeCommit repository using the `codecommit://` protocol.
+
+### `aws-secret-access-key`
+
+- Specify the AWS Secret Access Key for CodeCommit.
+- Required when deploying to a CodeCommit repository using the `codecommit://` protocol.
+
+### `aws-default-region`
+
+- Specify the AWS Default Region for CodeCommit.
+- Required when deploying to a CodeCommit repository using the `codecommit://` protocol.
 
 ## Changelog
 
